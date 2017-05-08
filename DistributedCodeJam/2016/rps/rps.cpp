@@ -30,10 +30,12 @@ int main() {
     if(nodes >= 64) {
         div = 64;
     }
-    div = 1;
 
-    long long beg = (players / div) * my_id;
-    long long end = (players / div) * (my_id + 1);
+    long long players_per_node = (players / div);
+    if (players_per_node == 0)
+	    players_per_node = 8;
+    long long beg = players_per_node * my_id;
+    long long end = players_per_node * (my_id + 1);
     if(end > players)
         end = players;
 
