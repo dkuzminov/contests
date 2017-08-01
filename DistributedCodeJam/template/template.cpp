@@ -32,8 +32,10 @@ namespace {
 
         BEG = MIN_WORK_PER_NODE * NID + min<long long>(N % NODES, NID);
         END = BEG + WORK_FOR_THIS_NODE;
-        if (END > N)
+        if (END > N) {
             END = N;
+            WORK_FOR_THIS_NODE = END - BEG;
+        }
 
         if (N > NODES)
             return NORMAL_MODE;
@@ -45,13 +47,13 @@ namespace {
 #define IS_LAST_NODE (NID == NODES - 1)
 #elif 1
     // Divide on equal ranges (except of the last one)
-    long long work_per_node;
+    long long BASIC_WORK_PER_NODE;
     long long BEG, END;
     enum { NORMAL_MODE, SMALL_DATA__MASTER_NODE, SMALL_DATA__OTHER_NODES };
     int init() {
-        work_per_node = N / NODES + (N % NODES ? 1 : 0);
-        BEG = work_per_node * NID;
-        END = work_per_node * (NID + 1);
+        BASIC_WORK_PER_NODE = N / NODES + (N % NODES ? 1 : 0);
+        BEG = BASIC_WORK_PER_NODE * NID;
+        END = BASIC_WORK_PER_NODE * (NID + 1);
         if (END > N)
             END = N;
 
@@ -71,6 +73,8 @@ namespace {
 int main() {
     switch (init()) {
     case SMALL_DATA__MASTER_NODE: {
+        // Code for single node mode
+        // ...
 
         printf("%lld\n", ____________);
         return 0;
@@ -80,7 +84,15 @@ int main() {
     case NORMAL_MODE:
         ;
     }
+    // ############################################
 
+    long long local_result = 0;
+
+    // Main code
+    // ...
+
+    PutLL(MASTER_NODE, local_result);
+    Send(MASTER_NODE);
 
     if (NID == MASTER_NODE) {
         // Sum the results
